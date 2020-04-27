@@ -1,0 +1,14 @@
+#tictactoegrid{
+    display: grid;
+    width: 120px;
+    height: 120px;
+    grid-template-columns: 40px 40px 40px;
+}
+
+.box{
+    border: 2px solid black;
+    height: 36px;
+    width: 36px;
+    text-align: center;
+    padding-top: 8px;   
+}
