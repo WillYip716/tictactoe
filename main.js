@@ -34,18 +34,18 @@ const GameBoard = (() => {
     for(let i = 0; i < 3; i++){
       if(board[i].indexOf("0")>-1){
         isTie = false;
-        break;
       }
     }
+    return isTie;
   }
-  const reset = () => this.board = [[0,0,0],[0,0,0],[0,0,0]];
+  const reset = () => board = [["0","0","0"],["0","0","0"],["0","0","0"]];
   const currentBoard = () => this.board;
   return {add,checkWinner,reset,currentBoard,checkTie};
 })();
 
 const Person = (name) => {
-  this.turn = false;
-  this.myName = name;
+  let turn = false;
+  let myName = name;
   const switchTurn = function(){
     if(turn){
       turn = false;
@@ -54,7 +54,7 @@ const Person = (name) => {
       turn = true;
     }
   }; 
-  const sayName = () => `${myName}`;
+  const sayName = () => myName;
   const myTurn = () => turn;
   return {sayName,myTurn,switchTurn};
 }
@@ -75,12 +75,14 @@ const render = function(){
       view.appendChild(element);
     }
   }
+  nextPlayerCounter();
 }
 
 let addMark = function(y,x){
   let element = document.getElementById(y+"_"+x);
   console.log("the turn is "+ player1.myTurn());
-  if(player1.myTurn()){
+  let turnP = player1.myTurn();
+  if(turnP){
     element.innerHTML = "O";
   }
   else{
@@ -90,7 +92,8 @@ let addMark = function(y,x){
   GameBoard.add(y,x);
   if(GameBoard.checkWinner()){
     let winnerMessage = "";
-    if(player1.myTurn()){
+    if(turnP){
+      console.log("i am the winner " + player1.sayName());
       winnerMessage = player1.sayName() + " is the winner!";
     }
     else{
@@ -110,19 +113,41 @@ let addMark = function(y,x){
     winnercontainer.innerHTML = "It's a tie";
   }
   player1.switchTurn();
+  nextPlayerCounter();
 }
 
-let player1 = Person("man");
-let player2 = Person("woman");
+let resetgame = function(){
+  let b = document.getElementById('tictactoegrid');
+  let cNode = b.cloneNode(false);
+  b.parentNode.replaceChild(cNode,b);
+  let a = document.getElementById("winnermessage");
+  a.innerHTML = "";
+  GameBoard.reset();
+  render();
+}
+
+let nextPlayerCounter = function(){
+  let holder = document.getElementById("turnCounter");
+  if(player1.myTurn()){
+    holder.innerHTML = "It is " + player1.sayName() + "'s turn";
+  }
+  else{
+    holder.innerHTML = "It is " + player2.sayName() + "'s turn";
+  }
+}
+
+let player1;
+let player2;
+
 
 window.addEventListener("load", function(){
   
   
-  //let player1Name = prompt("Enter player 1 name");
-  //player1 = Person(player1Name);
+  let player1Name = prompt("Enter player 1 name");
+  player1 = Person(player1Name);
   player1.switchTurn();
   console.log("THe start player is " +player1.myTurn());
-  //let player2Name = prompt("Enter player 2 name");
-  //player2 = Person(player2Name);
+  let player2Name = prompt("Enter player 2 name");
+  player2 = Person(player2Name);
   render();
 })
